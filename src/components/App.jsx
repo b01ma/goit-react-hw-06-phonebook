@@ -6,21 +6,21 @@ import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 import wrapper from './App.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { addContactRedux, deleteContactRedux } from 'redux/contactReducer';
+
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  // const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
-    const savedContacts = JSON.parse(localStorage.getItem('contacts'));
+  const reduxContacts = useSelector(state => state.contacts);
+  console.log(reduxContacts);
 
-    if (savedContacts) {
-      setContacts(savedContacts);
-    }
-  }, []);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    localStorage.setItem('contacts', JSON.stringify(reduxContacts));
+  }, [reduxContacts]);
 
   function addContact(name, number) {
     const newContact = {
@@ -31,20 +31,21 @@ export const App = () => {
 
     isSameContact(name, number)
       ? alert('This contact is already exists')
-      : setContacts(contacts => [...contacts, newContact]);
+      : dispatch(addContactRedux(newContact));
   }
 
   function isSameContact(name, number) {
     return (
-      contacts.find(
+      reduxContacts.find(
         contact =>
           contact.name.toLowerCase().trim() === name.toLowerCase().trim()
-      ) || contacts.find(contact => contact.number.trim() === number.trim())
+      ) ||
+      reduxContacts.find(contact => contact.number.trim() === number.trim())
     );
   }
 
   function deleteContact(contactId) {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
+    dispatch(deleteContactRedux(contactId));
   }
 
   function handleFilterChange(value) {
@@ -52,7 +53,7 @@ export const App = () => {
   }
 
   function filteredContacts() {
-    const filteredContacts = contacts.filter(contact =>
+    const filteredContacts = reduxContacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
 
@@ -68,8 +69,8 @@ export const App = () => {
 
       <Filter onChange={handleFilterChange} value={filter} />
 
-      {contacts && (
-        <ContactList contacts={filteredContacts()} onDelete={deleteContact} />
+      {reduxContacts && (
+        <ContactList contacts={reduxContacts} onDelete={deleteContact} />
       )}
     </div>
   );
