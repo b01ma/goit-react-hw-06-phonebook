@@ -1,5 +1,7 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
-const filterReducer = createReducer('', {});
+export const setReduxFilter = createAction('filter/setFilter');
 
-export default filterReducer;
+export const filterReducer = createReducer('', {
+  [setReduxFilter]: (state, action) => (state = action.payload),
+});

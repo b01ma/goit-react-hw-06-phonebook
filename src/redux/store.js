@@ -1,25 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { contactReducer } from './contactReducer';
-import filterReducer from './filterReducer';
-
-const getInitialState = contactArray => {
-  return {
-    contacts: contactArray,
-    filter: '',
-  };
-};
-
-let initialState = {
-  contacts: [],
-  filter: '',
-};
+import { filterReducer } from './filterReducer';
 
 const savedContacts = JSON.parse(localStorage.getItem('contacts'));
 
-if (savedContacts) {
-  initialState = getInitialState(savedContacts);
-}
+const getInitialState = contactArray => {
+  console.log(contactArray);
+  if (contactArray) {
+    return {
+      contacts: contactArray,
+      filter: '',
+    };
+  } else {
+    return {
+      contacts: [],
+      filter: '',
+    };
+  }
+};
+
+const initialState = getInitialState(savedContacts);
 
 console.log(initialState);
 

@@ -1,5 +1,5 @@
 // import { Component } from 'react/cjs/react.production.min';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
@@ -8,14 +8,11 @@ import wrapper from './App.css';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { addContactRedux, deleteContactRedux } from 'redux/contactReducer';
+import { setReduxFilter } from 'redux/filterReducer';
 
 export const App = () => {
-  // const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-
   const reduxContacts = useSelector(state => state.contacts);
-  console.log(reduxContacts);
-
+  const reduxFilter = useSelector(state => state.filter);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -49,12 +46,12 @@ export const App = () => {
   }
 
   function handleFilterChange(value) {
-    setFilter(value);
+    dispatch(setReduxFilter(value));
   }
 
   function filteredContacts() {
     const filteredContacts = reduxContacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+      contact.name.toLowerCase().includes(reduxFilter.toLowerCase())
     );
 
     return filteredContacts;
@@ -67,10 +64,10 @@ export const App = () => {
 
       <h1>Contacts</h1>
 
-      <Filter onChange={handleFilterChange} value={filter} />
+      <Filter onChange={handleFilterChange} value={reduxFilter} />
 
       {reduxContacts && (
-        <ContactList contacts={reduxContacts} onDelete={deleteContact} />
+        <ContactList contacts={filteredContacts()} onDelete={deleteContact} />
       )}
     </div>
   );
