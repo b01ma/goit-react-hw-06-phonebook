@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteContactRedux } from 'redux/contactReducer';
 
 const ContactList = () => {
-  const reduxContacts = useSelector(state => state.contacts);
-  const reduxFilter = useSelector(state => state.filter);
+  const reduxContacts = useSelector(state => state.contacts.items);
+  const reduxFilter = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
 
   function deleteContact(contactId) {
@@ -18,16 +18,6 @@ const ContactList = () => {
 
     return filteredContacts;
   }
-
-  console.log(reduxContacts);
-
-  // const test = testVar => {
-  //   console.log(testVar);
-
-  //   testVar.map(item => console.log(item));
-  // };
-
-  // test(reduxContacts);
 
   return (
     <Ul>
