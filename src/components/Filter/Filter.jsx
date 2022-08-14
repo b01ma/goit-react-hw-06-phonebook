@@ -1,20 +1,26 @@
 import { Input, Wrapper } from './Filter.css';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setReduxFilter } from 'redux/filterReducer';
 
-export const Filter = ({ value, onChange }) => {
+const Filter = () => {
+  const reduxFilter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
+
   const handleChange = e => {
-    onChange(e.target.value);
+    dispatch(setReduxFilter(e.target.value));
   };
 
   return (
     <Wrapper>
       <h2>Find contacts by name</h2>
-      <Input type="text" name="filter" value={value} onChange={handleChange} />
+      <Input
+        type="text"
+        name="filter"
+        value={reduxFilter}
+        onChange={handleChange}
+      />
     </Wrapper>
   );
 };
 
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
+export default Filter;

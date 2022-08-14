@@ -1,33 +1,37 @@
 import { configureStore } from '@reduxjs/toolkit';
-
 import { contactReducer } from './contactReducer';
 import { filterReducer } from './filterReducer';
 
-const savedContacts = JSON.parse(localStorage.getItem('contacts'));
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-const getInitialState = contactArray => {
-  console.log(contactArray);
-  if (contactArray) {
-    return {
-      contacts: contactArray,
-      filter: '',
-    };
-  } else {
-    return {
-      contacts: [],
-      filter: '',
-    };
-  }
+const persistConfig = {
+  key: 'root',
+  storage,
 };
 
-const initialState = getInitialState(savedContacts);
-
-console.log(initialState);
+const persistedContactReducer = persistReducer(persistConfig, contactReducer);
 
 export const store = configureStore({
   reducer: {
-    contacts: contactReducer,
+    contacts: persistedContactReducer,
     filter: filterReducer,
   },
-  preloadedState: initialState,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
+
+export const persistor = persistStore(store);
